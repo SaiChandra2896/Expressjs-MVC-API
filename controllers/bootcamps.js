@@ -1,4 +1,6 @@
-exports.getBootCamps = (req, res, next) => {};
+exports.getBootCamps = (req, res, next) => {
+  res.send("hii");
+};
 
 exports.getBootCamp = (req, res, next) => {};
 

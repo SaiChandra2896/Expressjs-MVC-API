@@ -1,4 +1,5 @@
 const BootCamp = require("../models/Bootcamp");
+const ApiError = require("../utils/ApiError");
 
 exports.getBootCamps = async (req, res, next) => {
   try {
@@ -16,13 +17,18 @@ exports.getBootCamps = async (req, res, next) => {
 exports.getBootCamp = async (req, res, next) => {
   try {
     const bootcamp = await BootCamp.findById(req.params.id);
+
+    if (!bootcamp)
+      return next(
+        new ApiError(`Bootcamp of Id: ${req.params.id} not found`, 404)
+      );
     res.status(200).json({
       success: true,
       data: bootcamp,
     });
   } catch (error) {
     // res.status(400).json({ success: false });
-    next(error);
+    next(new ApiError(`Bootcamp of Id: ${req.params.id} not found`, 404));
   }
 };
 

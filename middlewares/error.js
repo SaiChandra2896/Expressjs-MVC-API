@@ -20,7 +20,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   //   mongoose validation error
-  if ((err.name = "ValidationError")) {
+  if (err.name === "ValidationError") {
     const message = Object.values(err.errors).map((val) => val.message);
     error = new ApiError(message, 400);
   }

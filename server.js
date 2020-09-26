@@ -1,6 +1,8 @@
 const express = require("express");
+const path = require("path");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const fileUpload = require("express-fileupload");
 const colors = require("colors");
 
 const connectDB = require("./config/db");
@@ -12,8 +14,6 @@ dotenv.config({ path: "./config/config.env" });
 // connect to DB
 connectDB();
 
-// middleware
-
 // routes
 const bootcamps = require("./routes/boocamps");
 const courses = require("./routes/courses");
@@ -22,6 +22,12 @@ const app = express();
 
 // body parser
 app.use(express.json());
+
+// file upload
+app.use(fileUpload());
+
+// set static folder
+app.use(express.static(path.join(__dirname, "public")));
 
 // dev logging middleware
 if (process.env.NODE_ENV === "development") {

@@ -11,6 +11,7 @@ const {
   updateBootCamp,
   deleteBootCamp,
   getBootCampsInRadius,
+  bootCampPhotoUplaod,
 } = require("../controllers/bootcamps");
 
 // Re-Route iinto other resource routers- This redirects the to course Router
@@ -25,5 +26,7 @@ router
   .delete(deleteBootCamp);
 
 router.route("/radius/:zipcode/:distance").get(getBootCampsInRadius);
+
+router.route("/:id/photo").put(bootCampPhotoUplaod);
 
 module.exports = router;

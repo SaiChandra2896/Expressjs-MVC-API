@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-const { options } = require("../routes/courses");
 
 const geocoder = require("../utils/geocoder");
 
@@ -129,6 +128,13 @@ BootcampSchema.pre("save", async function (next) {
   //   stop address from saving to db (used it just to get location using geocoding)
   this.address = undefined;
 
+  next();
+});
+
+// Cascade delete courses when a bootcamp is deleted
+BootcampSchema.pre("remove", async function (next) {
+  console.log("courses removed from bootcamp");
+  await this.model("Course").deleteMany({ bootcamp: this._id });
   next();
 });
 

@@ -117,12 +117,14 @@ exports.updateBootCamp = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteBootCamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await BootCamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await BootCamp.findById(req.params.id);
 
   if (!bootcamp)
     return next(
       new ApiError(`Bootcamp of Id: ${req.params.id} not found`, 404)
     );
+  // use bootcamp.remove() to trigger remove middleware in Bootcamp model
+  bootcamp.remove();
 
   res.status(200).json({
     success: true,

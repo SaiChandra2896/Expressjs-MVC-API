@@ -4,80 +4,11 @@ const BootCamp = require("../models/Bootcamp");
 const ApiError = require("../utils/ApiError");
 
 const asyncHandler = require("../middlewares/async");
+
 const geocoder = require("../utils/geocoder");
-const Bootcamp = require("../models/Bootcamp");
 
 exports.getBootCamps = asyncHandler(async (req, res, next) => {
-  // build our query to search according to query strings
-  let query;
-
-  const reqQuery = { ...req.query };
-
-  const removeFeilds = ["select", "sort", "page", "limit"];
-
-  // loop over removeFeilds and delete them from req query
-  removeFeilds.forEach((param) => delete reqQuery[param]);
-  // console.log(reqQuery);
-
-  let queryStr = JSON.stringify(reqQuery);
-
-  // convert operators into mongo operators (gt, gte, lt, lte)
-  queryStr = queryStr.replace(
-    /\b(gt|gte|lt|lte|in)\b/g,
-    (match) => `$${match}`
-  );
-
-  // search according to our queries in url
-  query = BootCamp.find(JSON.parse(queryStr)).populate("courses");
-
-  // select feilds
-  if (req.query.select) {
-    const fields = req.query.select.split(",").join(" ");
-    query = query.select(fields);
-  }
-
-  // sort
-  if (req.query.sort) {
-    const sortBy = req.query.sort.split(",").join(" ");
-    query = query.sort(sortBy);
-  } else {
-    // default descending order of createdAt field
-    query = query.sort("-createdAt");
-  }
-
-  // pagination
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 25;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const total = await BootCamp.countDocuments();
-
-  query = query.skip(startIndex).limit(limit);
-
-  // pagination result
-  const pagination = {};
-
-  if (endIndex < total) {
-    pagination.next = {
-      page: page + 1,
-      limit,
-    };
-  }
-
-  if (startIndex > 0) {
-    pagination.prev = {
-      page: page - 1,
-      limit,
-    };
-  }
-
-  const bootcamps = await query;
-  res.status(200).json({
-    success: true,
-    count: bootcamps.length,
-    pagination,
-    data: bootcamps,
-  });
+  res.status(200).json(res.advancedResults);
 });
 
 exports.getBootCamp = asyncHandler(async (req, res, next) => {

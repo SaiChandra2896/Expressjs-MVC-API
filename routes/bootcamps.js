@@ -4,6 +4,9 @@ const router = express.Router();
 // include other resource routers
 const courseRouter = require("./courses");
 
+const advancedResult = require("../middlewares/advancedResult");
+const Bootcamp = require("../models/Bootcamp");
+
 const {
   getBootCamps,
   getBootCamp,
@@ -17,7 +20,10 @@ const {
 // Re-Route iinto other resource routers- This redirects the to course Router
 router.use("/:bootcampId/courses", courseRouter);
 
-router.route("/").get(getBootCamps).post(createBootCamp);
+router
+  .route("/")
+  .get(advancedResult(Bootcamp, "courses"), getBootCamps)
+  .post(createBootCamp);
 
 router
   .route("/:id")

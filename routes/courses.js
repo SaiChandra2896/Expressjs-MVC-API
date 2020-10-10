@@ -4,6 +4,7 @@ const router = express.Router({ mergeParams: true });
 const Course = require("../models/Course");
 
 const advancedResult = require("../middlewares/advancedResult");
+const { lock } = require("../middlewares/auth");
 
 const {
   getCourses,
@@ -22,7 +23,11 @@ router
     }),
     getCourses
   )
-  .post(addCourse);
-router.route("/:id").get(getCourse).put(updateCourse).delete(deleteCourse);
+  .post(lock, addCourse);
+router
+  .route("/:id")
+  .get(getCourse)
+  .put(lock, updateCourse)
+  .delete(lock, deleteCourse);
 
 module.exports = router;
